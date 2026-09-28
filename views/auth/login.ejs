@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - E-Library SMK Telkom</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center relative overflow-hidden">
+  
+  <div class="absolute -top-40 -right-40 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
+  <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
+
+  <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md z-10 border border-gray-100">
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-bold text-gray-800 mb-2">E-Library</h1>
+      <p class="text-gray-500">Masuk ke Sistem Perpustakaan Digital</p>
+    </div>
+
+    <% if (error) { %>
+      <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-r-md">
+        <p class="text-red-700 text-sm"><%= error %></p>
+      </div>
+    <% } %>
+
+    <form action="/auth/login" method="POST" class="space-y-6">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Username</label>
+        <input type="text" name="username" id="username" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" required>
+      </div>
+      
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+        <input type="password" name="password" id="password" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" required>
+      </div>
+
+      <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 shadow-lg shadow-blue-500/30">
+        Masuk
+      </button>
+    </form>
+
+    <div class="mt-8 border-t border-gray-200 pt-6">
+      <p class="text-sm text-center text-gray-600 mb-4">Demo Login Cepat (Klik untuk mengisi form)</p>
+      <div class="grid grid-cols-3 gap-3">
+        <button onclick="fillLogin('admin', 'password123')" class="text-xs font-medium bg-gray-50 hover:bg-gray-100 text-gray-700 py-2 px-2 rounded border border-gray-200 transition-colors">
+          Admin
+        </button>
+        <button onclick="fillLogin('petugas', 'password123')" class="text-xs font-medium bg-gray-50 hover:bg-gray-100 text-gray-700 py-2 px-2 rounded border border-gray-200 transition-colors">
+          Petugas
+        </button>
+        <button onclick="fillLogin('peminjam', 'password123')" class="text-xs font-medium bg-gray-50 hover:bg-gray-100 text-gray-700 py-2 px-2 rounded border border-gray-200 transition-colors">
+          Peminjam
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function fillLogin(username, password) {
+      document.getElementById('username').value = username;
+      document.getElementById('password').value = password;
+    }
+  </script>
+</body>
+</html>

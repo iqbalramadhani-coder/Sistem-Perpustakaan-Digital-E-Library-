@@ -620,3 +620,4 @@ Untuk melihat dan mengelola isi tabel SQLite secara visual persis seperti phpMyA
 * **Institusi:** SMK Telkom Lampung — Rekayasa Perangkat Lunak (RPL)
 * **Kegiatan:** Program Guru Tamu Industri / Praktisi Mengajar (PjBL) 2026
 * **Portal Pengumpulan Tugas:** [https://codeathome.id/workshop-pjbl-smk-telkom-day-2](https://codeathome.id/workshop-pjbl-smk-telkom-day-2)
+# Sistem-Perpustakaan-Digital-E-Library-

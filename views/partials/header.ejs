@@ -3,53 +3,66 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= typeof title !== 'undefined' ? title : 'SEWA AJA — Persewaan Busana SMK Telkom' %></title>
-  <link rel="stylesheet" href="/css/style.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👘</text></svg>">
+  <title><%= typeof title !== 'undefined' ? title : 'E-Library Dashboard' %></title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+  </style>
 </head>
-<body>
-
-  <!-- Navigation Bar -->
-  <nav class="navbar">
-    <div class="container nav-container">
-      <a href="/" class="brand-logo">
-        <div class="brand-icon">👘</div>
-        <div class="brand-text">
-          <h1>SEWA AJA</h1>
-          <span>Manajemen Busana • SMK Telkom Lampung</span>
-        </div>
-      </a>
-
-      <ul class="nav-links">
-        <li>
-          <a href="/" class="nav-link <%= typeof currentPage !== 'undefined' && currentPage === 'dashboard' ? 'active' : '' %>">
-            📊 Dashboard
-          </a>
-        </li>
-        <li>
-          <a href="/items" class="nav-link <%= typeof currentPage !== 'undefined' && currentPage === 'items' ? 'active' : '' %>">
-            👗 Cek Barang (Katalog)
-          </a>
-        </li>
-        <li>
-          <a href="/rentals" class="nav-link <%= typeof currentPage !== 'undefined' && currentPage === 'rentals' ? 'active' : '' %>">
-            📋 Cek Sewaan
-          </a>
-        </li>
-        <li>
-          <a href="/rentals/new" class="nav-link nav-cta">
-            ➕ Transaksi Sewa Baru
-          </a>
-        </li>
-      </ul>
-
-      <div class="nav-status">
-        <span class="status-dot"></span>
-        <span>EJS + SQLite (Aktif)</span>
-      </div>
+<body class="bg-gray-50 flex h-screen overflow-hidden">
+  
+  <aside class="w-64 bg-white border-r border-gray-200 flex flex-col hidden md:flex">
+    <div class="h-16 flex items-center px-6 border-b border-gray-200">
+      <h1 class="text-xl font-bold text-blue-600">E-Library</h1>
     </div>
-  </nav>
+    
+    <div class="flex-1 overflow-y-auto py-4">
+      <nav class="px-4 space-y-1">
+        <% if (user.role === 'ADMIN') { %>
+          <a href="/admin" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg text-gray-900 hover:bg-gray-100">Dashboard Admin</a>
+          <a href="/admin/users" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">Kelola Pengguna</a>
+          <a href="/admin/categories" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">Kategori & Rak</a>
+          <a href="/admin/books" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">Katalog Buku</a>
+          <a href="/admin/logs" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">Audit Log</a>
+        <% } else if (user.role === 'PETUGAS') { %>
+          <a href="/petugas" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg text-gray-900 hover:bg-gray-100">Dashboard Petugas</a>
+          <a href="/petugas/categories" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">Kategori & Rak</a>
+          <a href="/petugas/books" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">Katalog Buku</a>
+          <a href="/petugas/loans" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">Peminjaman</a>
+          <a href="/petugas/reports" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">Laporan</a>
+        <% } else if (user.role === 'PEMINJAM') { %>
+          <a href="/peminjam" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg text-gray-900 hover:bg-gray-100">Beranda</a>
+          <a href="/peminjam/books" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">Katalog Buku</a>
+          <a href="/peminjam/history" class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">Riwayat Peminjaman</a>
+        <% } %>
+      </nav>
+    </div>
+  </aside>
 
-  <!-- Main Content Wrapper -->
-  <main class="main-content">
-    <div class="container">
+  <div class="flex-1 flex flex-col overflow-hidden">
+    <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 z-10">
+      <div>
+        <button class="md:hidden text-gray-500 hover:text-gray-700">
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+      <div class="flex items-center gap-4">
+        <span class="text-sm font-medium text-gray-700">Halo, <%= user.nama %> (<%= user.role %>)</span>
+        <a href="/auth/logout" class="text-sm text-red-600 hover:text-red-800 font-medium">Logout</a>
+      </div>
+    </header>
+
+    <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-6">
+      <% if (success) { %>
+        <div class="bg-green-50 border-l-4 border-green-500 p-4 mb-6 rounded-r-md">
+          <p class="text-green-700 text-sm"><%= success %></p>
+        </div>
+      <% } %>
+      <% if (error) { %>
+        <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-r-md">
+          <p class="text-red-700 text-sm"><%= error %></p>
+        </div>
+      <% } %>

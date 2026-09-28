@@ -4,71 +4,64 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = env("DATABASE_URL")
+  url      = "file:./dev.db"
 }
 
-// 1. Model Katalog Busana (Kebaya, Jas Formal, Gaun, Beskap, Aksesoris)
-model Item {
-  id          Int          @id @default(autoincrement())
-  code        String       @unique // Contoh: KBY-01, JAS-01
-  name        String       // Contoh: Kebaya Brokat Maroon Modern
-  category    String       // Kebaya, Jas Formal, Gaun Pengantin, Beskap Adat, Aksesoris
-  size        String       @default("All Size") // S, M, L, XL, All Size
-  rentalPrice Int          // Harga sewa per hari (Rp)
-  stock       Int          @default(1)
-  status      String       @default("AVAILABLE") // AVAILABLE, RENTED, LAUNDRY, MAINTENANCE
-  description String?      // Keterangan bahan, warna, kelengkapan
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  rentalItems RentalItem[]
+model User {
+  id       Int     @id @default(autoincrement())
+  username String  @unique
+  password String
+  nama     String
+  role     String // ADMIN, PETUGAS, PEMINJAM
+  nisn     String?
+  telepon  String?
+
+  loans       Loan[]        @relation("UserLoans")
+  processedBy Loan[]        @relation("PetugasLoans")
+  ActivityLog ActivityLog[]
 }
 
-// 2. Model Data Pelanggan / Penyewa
-model Customer {
-  id           Int                 @id @default(autoincrement())
-  name         String
-  phone        String
-  address      String?
-  idCardNumber String?             // Nomor KTP / SIM Jaminan
-  createdAt    DateTime            @default(now())
-  rentals      RentalTransaction[]
+model Category {
+  id           Int    @id @default(autoincrement())
+  namaKategori String
+  kodeRak      String
+
+  books Book[]
 }
 
-// 3. Model Transaksi Persewaan Busana
-model RentalTransaction {
-  id                Int          @id @default(autoincrement())
-  transactionCode   String       @unique // Contoh: SE-82383
-  customerId        Int
-  customer          Customer     @relation(fields: [customerId], references: [id])
-  cashierName       String       @default("Seli (Kasir)")
-  pickupDate        DateTime     // Tanggal Ambil (H-1)
-  eventDate         DateTime     // Hari H (Tanggal Pakai)
-  returnDate        DateTime     // Tanggal Pulang / Kembali (H+1)
-  actualReturnDate  DateTime?    // Tanggal pengembalian riil oleh pelanggan
-  totalBasePrice    Int          // Total tarif sewa busana
-  additionalCharge  Int          @default(0) // Biaya charge / aksesoris tambahan
-  discount          Int          @default(0) // Diskon promo (Rp)
-  finalPrice        Int          // Total tagihan akhir
-  paidAmount        Int          // Nominal dibayar (DP minimal Rp 50.000 atau Lunas)
-  remainingAmount   Int          // Sisa tagihan / kekurangan (Rp)
-  paymentType       String       @default("DP") // DP, LUNAS
-  paymentMethod     String       @default("TUNAI") // TUNAI, TRANSFER, QRIS
-  rentalStatus      String       @default("BOOKING") // BOOKING, DIAMBIL, SELESAI, BATAL, TERLAMBAT
-  customerGuarantee String       @default("E-KTP") // E-KTP, SIM, KTP Pelajar
-  fittingNotes      String?      // Catatan vermak/ukuran: "Jas dikecilin 3 cm di pinggang..."
-  penaltyFee        Int          @default(0) // Denda keterlambatan jika lewat returnDate
-  createdAt         DateTime     @default(now())
-  updatedAt         DateTime     @updatedAt
-  rentalItems       RentalItem[]
+model Book {
+  id         Int      @id @default(autoincrement())
+  judul      String
+  pengarang  String
+  penerbit   String
+  tahun      String
+  isbn       String
+  stok       Int
+  categoryId Int
+  category   Category @relation(fields: [categoryId], references: [id])
+  loans      Loan[]
 }
 
-// 4. Model Rincian Busana dalam Transaksi (Pivot Relation)
-model RentalItem {
-  id                  Int               @id @default(autoincrement())
-  rentalTransactionId Int
-  rentalTransaction   RentalTransaction @relation(fields: [rentalTransactionId], references: [id], onDelete: Cascade)
-  itemId              Int
-  item                Item              @relation(fields: [itemId], references: [id])
-  priceAtRent         Int               // Harga sewa pada saat transaksi dibuat
-  itemCustomNote      String?           // Catatan khusus item ini
+model Loan {
+  id            Int       @id @default(autoincrement())
+  userId        Int
+  user          User      @relation("UserLoans", fields: [userId], references: [id])
+  bookId        Int
+  book          Book      @relation(fields: [bookId], references: [id])
+  tglPinjam     DateTime
+  tglJatuhTempo DateTime
+  tglKembali    DateTime?
+  status        String // PENDING, DIPINJAM, KEMBALI, DITOLAK
+  denda         Int       @default(0)
+  petugasId     Int?
+  petugas       User?     @relation("PetugasLoans", fields: [petugasId], references: [id])
+}
+
+model ActivityLog {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id])
+  aksi       String
+  keterangan String
+  createdAt  DateTime @default(now())
 }

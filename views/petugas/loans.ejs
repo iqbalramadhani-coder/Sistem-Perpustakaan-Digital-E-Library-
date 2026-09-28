@@ -1,0 +1,68 @@
+<%- include('../partials/header') %>
+
+<div class="mb-6 flex justify-between items-center">
+  <div>
+    <h2 class="text-2xl font-bold text-gray-800">Kelola Peminjaman</h2>
+    <p class="text-gray-600">Persetujuan peminjaman dan proses pengembalian buku.</p>
+  </div>
+</div>
+
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+  <div class="overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Buku</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tgl / Jatuh Tempo</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status & Denda</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        <% loans.forEach(loan => { %>
+        <tr>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="font-medium text-gray-900"><%= loan.user.nama %></div>
+            <div class="text-xs text-gray-500"><%= loan.user.username %></div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="font-medium text-gray-900"><%= loan.book.judul %></div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+            <div>Pinjam: <%= new Date(loan.tglPinjam).toLocaleDateString('id-ID') %></div>
+            <div class="text-red-500">Tempo: <%= new Date(loan.tglJatuhTempo).toLocaleDateString('id-ID') %></div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <% if(loan.status === 'PENDING') { %>
+              <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800 mb-1">Pending</span>
+            <% } else if(loan.status === 'DIPINJAM') { %>
+              <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800 mb-1">Dipinjam</span>
+            <% } else if(loan.status === 'KEMBALI') { %>
+              <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 mb-1">Kembali</span>
+              <% if(loan.denda > 0) { %>
+                <div class="text-xs text-red-600 font-bold mt-1">Denda: Rp <%= loan.denda %></div>
+              <% } %>
+            <% } %>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+            <% if(loan.status === 'PENDING') { %>
+              <form action="/petugas/loans/approve/<%= loan.id %>" method="POST" class="inline">
+                <button type="submit" class="text-white bg-green-600 hover:bg-green-700 px-3 py-1 rounded-md text-xs transition">Setujui</button>
+              </form>
+            <% } else if(loan.status === 'DIPINJAM') { %>
+              <form action="/petugas/loans/return/<%= loan.id %>" method="POST" class="inline">
+                <button type="submit" class="text-white bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded-md text-xs transition">Proses Kembali</button>
+              </form>
+            <% } else { %>
+              <span class="text-gray-400 text-xs">Selesai</span>
+            <% } %>
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

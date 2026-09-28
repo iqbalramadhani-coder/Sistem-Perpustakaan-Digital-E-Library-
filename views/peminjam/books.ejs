@@ -1,0 +1,40 @@
+<%- include('../partials/header') %>
+
+<div class="mb-6">
+  <h2 class="text-2xl font-bold text-gray-800">Katalog Buku</h2>
+</div>
+
+<div class="mb-6 bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+  <form action="/peminjam/books" method="GET" class="flex gap-4">
+    <input type="text" name="q" value="<%= query %>" placeholder="Cari judul atau pengarang..." class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+    <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition">Cari</button>
+  </form>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+  <% books.forEach(book => { %>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col">
+      <div class="p-6 flex-1">
+        <div class="text-xs font-semibold text-blue-600 uppercase tracking-wider mb-1"><%= book.category.namaKategori %></div>
+        <h3 class="text-lg font-bold text-gray-900 mb-2 leading-tight"><%= book.judul %></h3>
+        <p class="text-sm text-gray-600 mb-1"><span class="font-medium">Oleh:</span> <%= book.pengarang %></p>
+        <p class="text-sm text-gray-600 mb-1"><span class="font-medium">Penerbit:</span> <%= book.penerbit %> (<%= book.tahun %>)</p>
+        <p class="text-sm text-gray-600 mb-4"><span class="font-medium">Stok:</span> <%= book.stok %> tersedia</p>
+      </div>
+      <div class="px-6 py-4 bg-gray-50 border-t border-gray-100">
+        <form action="/peminjam/books/borrow/<%= book.id %>" method="POST">
+          <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition <%= book.stok === 0 ? 'opacity-50 cursor-not-allowed' : '' %>" <%= book.stok === 0 ? 'disabled' : '' %>>
+            <%= book.stok > 0 ? 'Pinjam Buku' : 'Stok Habis' %>
+          </button>
+        </form>
+      </div>
+    </div>
+  <% }) %>
+  <% if (books.length === 0) { %>
+    <div class="col-span-full text-center py-12 text-gray-500">
+      Tidak ada buku yang ditemukan.
+    </div>
+  <% } %>
+</div>
+
+<%- include('../partials/footer') %>
