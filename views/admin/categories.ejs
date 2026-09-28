@@ -1,0 +1,58 @@
+<%- include('../partials/header') %>
+
+<div class="mb-6 flex justify-between items-center">
+  <div>
+    <h2 class="text-2xl font-bold text-gray-800">Kategori & Rak</h2>
+    <p class="text-gray-600">Kelola kategori buku dan klasifikasi rak penyimpanan.</p>
+  </div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+  <div class="md:col-span-1">
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+      <h3 class="text-lg font-bold text-gray-800 mb-4">Tambah Kategori</h3>
+      <form action="<%= user.role === 'ADMIN' ? '/admin/categories' : '/petugas/categories' %>" method="POST" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Nama Kategori</label>
+          <input type="text" name="namaKategori" required placeholder="Contoh: Sains & Teknologi" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Kode Rak</label>
+          <input type="text" name="kodeRak" required placeholder="Contoh: A-01" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+        </div>
+        <button type="submit" class="w-full bg-blue-600 text-white font-medium py-2 rounded-lg hover:bg-blue-700">Simpan Kategori</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="md:col-span-2">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama Kategori</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Kode Rak</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <% categories.forEach(cat => { %>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">#<%= cat.id %></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><%= cat.namaKategori %></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                  Rak <%= cat.kodeRak %>
+                </span>
+              </td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

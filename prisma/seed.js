@@ -84,7 +84,7 @@ async function main() {
 
   // Seed Loans (1 Pending, 1 Dipinjam, 1 Kembali, 1 Overdue)
   const today = new Date();
-  
+
   // Pending
   await prisma.loan.create({
     data: {
@@ -107,7 +107,7 @@ async function main() {
       petugasId: petugas.id
     }
   });
-  
+
   // Overdue (untuk test denda)
   await prisma.loan.create({
     data: {
